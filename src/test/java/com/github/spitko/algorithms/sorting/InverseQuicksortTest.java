@@ -19,38 +19,44 @@ class InverseQuicksortTest {
 		Quicksort sorter = new Quicksort();
 		sorter.sort(arr);
 		System.out.println(Arrays.toString(arr));
+		System.out.println(sorter.maxDepth);
 
 		sorter = new Quicksort();
 		sorter.sort(arr2);
 		System.out.println(Arrays.toString(arr2));
+		System.out.println(sorter.maxDepth);
 
 		sorter = new Quicksort();
 		sorter.sort(arr3);
 		System.out.println(Arrays.toString(arr3));
+		System.out.println(sorter.maxDepth);
 
 		sorter = new Quicksort();
 		sorter.sort(arr4);
 		System.out.println(Arrays.toString(arr4));
+		System.out.println(sorter.maxDepth);
 
 	}
 	/**
 	 * Quicksort using Hoare partition scheme with pivot chosen as first element
 	 */
 	static class Quicksort extends InverseSortTest.InplaceSort {
+		int maxDepth = 0;
 
 		@Override
 		void sort(int[] arr) {
-			quicksort(arr, 0, arr.length - 1);
+			quicksort(arr, 0, arr.length - 1, 0);
 		}
 
-		private void quicksort(int[] arr, int lo, int hi) {
+		private void quicksort(int[] arr, int lo, int hi, int depth) {
+			maxDepth = Math.max(depth, maxDepth);
 			while (lo < hi) {
 				int pi = partition(arr, lo, hi);
-				if (pi - lo <= hi - pi) {
-					quicksort(arr, lo, pi);
+				if (pi - lo < hi - pi) {
+					quicksort(arr, lo, pi, depth + 1);
 					lo = pi + 1;
 				} else {
-					quicksort(arr, pi + 1, hi);
+					quicksort(arr, pi + 1, hi, depth + 1);
 					hi = pi;
 				}
 			}
