@@ -18,7 +18,7 @@ public class InverseInsertionSort extends InverseSort {
 	}
 
 	/**
-	 * @param arr Array
+	 * @param arr        Array
 	 * @param insertions Between [0, arr.length] (inclusive)
 	 */
 	@Override

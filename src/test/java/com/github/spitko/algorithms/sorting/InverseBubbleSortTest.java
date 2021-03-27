@@ -65,18 +65,18 @@ class InverseBubbleSortTest {
 
 		@Override
 		void sort(int[] arr) {
-			int n = arr.length;
-			while (n > 0) {
+			boolean sorted;
+			do {
 				iterations++;
-				int lastSorted = 0;
-				for (int i = 1; i < n; i++) {
+				sorted = true;
+				for (int i = arr.length - 1; i > 0; i--) {
 					if (arr[i - 1] > arr[i]) {
 						swap(arr, i - 1, i);
-						lastSorted = i;
+						sorted = false;
 					}
 				}
-				n = lastSorted;
 			}
+			while (!sorted);
 		}
 	}
 }

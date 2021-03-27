@@ -12,7 +12,7 @@ public class InverseBubbleSort extends InverseSort {
 	}
 
 	/**
-	 * @param arr Array
+	 * @param arr        Array
 	 * @param iterations Between [1, arr.length) (exclusive)
 	 */
 	@Override
@@ -25,16 +25,16 @@ public class InverseBubbleSort extends InverseSort {
 		}
 		int max = arr.length - iterations + 1;
 		int required = getBinomial(1, max, 1.0 / iterations);
-		for (int i = arr.length; i > 1; i--) {
-			int min = Math.max(i - iterations, 0);
+		for (int i = 0; i < arr.length; i++) {
+			int min = Math.max(arr.length - i - iterations, 0);
 			int j;
 			if (required > 0 && random.nextInt(min + 1) < required) {
-				j = min;
+				j = arr.length - min - 1;
 				required--;
 			} else {
-				j = random.nextInt(Math.max(i - iterations + 1, 0), i);
+				j = arr.length - 1 - random.nextInt(Math.max(arr.length - i - iterations + 1, 0), arr.length - i);
 			}
-			swap(arr, i - 1, j);
+			swap(arr, i, j);
 		}
 	}
 }
