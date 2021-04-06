@@ -37,4 +37,23 @@ public class InverseBubbleSort extends InverseSort {
 			swap(arr, i, j);
 		}
 	}
+
+	@Override
+	public int getRemaining(int[] arr) {
+		arr = arr.clone();
+		int iterations = 0;
+		boolean sorted;
+		do {
+			iterations++;
+			sorted = true;
+			for (int i = arr.length - 1; i > 0; i--) {
+				if (arr[i - 1] > arr[i]) {
+					swap(arr, i - 1, i);
+					sorted = false;
+				}
+			}
+		}
+		while (!sorted);
+		return iterations;
+	}
 }

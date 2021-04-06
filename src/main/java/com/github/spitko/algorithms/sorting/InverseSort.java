@@ -18,6 +18,8 @@ public abstract class InverseSort {
 
 	public abstract void shuffle(int[] arr, int diff);
 
+	public abstract int getRemaining(int[] arr);
+
 	public int[] generateArray(int start, int end, int count) {
 		if (count > end - start) {
 			throw new IllegalArgumentException();
@@ -35,5 +37,12 @@ public abstract class InverseSort {
 			}
 		}
 		return x;
+	}
+
+	public void shuffle(int[] arr) {
+		for (int i = arr.length - 1; i > 0; i--) {
+			int j = random.nextInt(i + 1);
+			swap(arr, i, j);
+		}
 	}
 }

@@ -12,7 +12,7 @@ public class InverseSelectionSort extends InverseSort {
 	}
 
 	/**
-	 * @param arr Array
+	 * @param arr   Array
 	 * @param swaps Between [0, arr.length] (inclusive)
 	 */
 	@Override
@@ -30,5 +30,24 @@ public class InverseSelectionSort extends InverseSort {
 				swaps--;
 			}
 		}
+	}
+
+	@Override
+	public int getRemaining(int[] arr) {
+		arr = arr.clone();
+		int swaps = 0;
+		for (int i = 0; i < arr.length - 1; i++) {
+			int min = i;
+			for (int j = i + 1; j < arr.length; j++) {
+				if (arr[j] < arr[min]) {
+					min = j;
+				}
+			}
+			if (min != i) {
+				swap(arr, i, min);
+				swaps++;
+			}
+		}
+		return swaps;
 	}
 }

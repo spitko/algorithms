@@ -1,7 +1,9 @@
 package com.github.spitko.algorithms.sorting;
 
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class InverseHeapify extends InverseSort {
@@ -16,31 +18,47 @@ public class InverseHeapify extends InverseSort {
 	}
 
 
+	/**
+	 * @param arr        Array
+	 * @param operations Between [0, arr.length / 2] (inclusive)
+	 */
 	@Override
-	public void shuffle(int[] arr, int swaps) {
-		if (arr == null || swaps < 0 || swaps > getMaxSwaps(arr)) {
+	public void shuffle(int[] arr, int operations) {
+		if (arr == null || operations < 0 || operations > arr.length / 2) {
 			throw new IllegalArgumentException();
 		}
-		do {
-			for (int i = arr.length - 1; i > 0; i--) {
-				int j = random.nextInt(i + 1);
-				swap(arr, i, j);
-			}
-		} while (getSwaps(arr) != swaps);
+		shuffle(arr);
+		int n = arr.length;
+		for (int i = n / 2 - 1; i >= 0; i--) {
+			sink(arr, n, i);
+		}
+		List<Integer> list = IntStream.range(0, n / 2).boxed().collect(Collectors.toList());
+		Collections.shuffle(list);
+		list = list.subList(0, operations);
+		Collections.sort(list);
+		for (Integer i : list) {
+			int j = i * 2 + 1 + random.nextInt(2);
+			swap(arr, i, j);
+		}
 	}
 
-	public int getSwaps(int[] arr) {
+	@Override
+	public int getRemaining(int[] arr) {
+		arr = arr.clone();
 		int n = arr.length;
-		int[] clone = arr.clone();
-		return IntStream.iterate(n / 2 - 1, i -> i >= 0, i -> i - 1).map(i -> sink(clone, n, i)).sum();
+		int operations = 0;
+		for (int i = n / 2 - 1; i >= 0; i--) {
+			operations += sink(arr, n, i) ? 1 : 0;
+		}
+		return operations;
 	}
 
 	public int getMaxSwaps(int[] arr) {
 		return (int) Math.ceil(Math.log(arr.length + 1) / Math.log(2));
 	}
 
-	private int sink(int[] arr, int n, int i) {
-		int swaps = 0;
+	private boolean sink(int[] arr, int n, int i) {
+		boolean swapped = false;
 		while (true) {
 			int left = 2 * i + 1;
 			int right = 2 * i + 2;
@@ -54,10 +72,10 @@ public class InverseHeapify extends InverseSort {
 			}
 			if (largest != i) {
 				swap(arr, largest, i);
-				swaps++;
+				swapped = true;
 				i = largest;
 			} else break;
 		}
-		return swaps;
+		return swapped;
 	}
 }

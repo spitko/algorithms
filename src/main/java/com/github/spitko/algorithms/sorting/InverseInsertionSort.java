@@ -4,10 +4,17 @@ import java.util.Arrays;
 
 public class InverseInsertionSort extends InverseSort {
 
-	private static void insert(int[] arr, int from, int to) {
-		while (from < to) {
-			swap(arr, from, ++from);
+	/**
+	 * @param arr Array
+	 * @param i   Index of element to insert
+	 * @param j   Index where to insert selected element
+	 */
+	private static void insert(int[] arr, int i, int j) {
+		int x = arr[i];
+		while (i < j) {
+			arr[i] = arr[++i];
 		}
+		arr[j] = x;
 	}
 
 	public static void main(String[] args) {
@@ -36,5 +43,24 @@ public class InverseInsertionSort extends InverseSort {
 				insertions--;
 			}
 		}
+	}
+
+	@Override
+	public int getRemaining(int[] arr) {
+		arr = arr.clone();
+		int insertions = 0;
+		for (int i = 1; i < arr.length; i++) {
+			int x = arr[i];
+			int j = i - 1;
+			while (j >= 0 && arr[j] > x) {
+				arr[j + 1] = arr[j];
+				j--;
+			}
+			if (j + 1 != i) {
+				arr[j + 1] = x;
+				insertions++;
+			}
+		}
+		return insertions;
 	}
 }
