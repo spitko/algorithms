@@ -14,7 +14,6 @@ public class InverseHeapify extends InverseSort {
 		InverseHeapify sort = new InverseHeapify();
 		sort.shuffle(arr, 2);
 		System.out.println(Arrays.toString(arr));
-		System.out.println(sort.getMaxSwaps(arr));
 	}
 
 
@@ -37,7 +36,10 @@ public class InverseHeapify extends InverseSort {
 		list = list.subList(0, operations);
 		Collections.sort(list);
 		for (Integer i : list) {
-			int j = i * 2 + 1 + random.nextInt(2);
+			int j = i * 2 + 1;
+			if (j + 1 < n) {
+				j += random.nextInt(2);
+			}
 			swap(arr, i, j);
 		}
 	}
@@ -51,10 +53,6 @@ public class InverseHeapify extends InverseSort {
 			operations += sink(arr, n, i) ? 1 : 0;
 		}
 		return operations;
-	}
-
-	public int getMaxSwaps(int[] arr) {
-		return (int) Math.ceil(Math.log(arr.length + 1) / Math.log(2));
 	}
 
 	private boolean sink(int[] arr, int n, int i) {
