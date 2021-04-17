@@ -13,7 +13,7 @@ public class InverseBubbleSort extends InverseSort {
 
 	/**
 	 * @param arr        Array
-	 * @param iterations Between [1, arr.length) (exclusive)
+	 * @param iterations Between [1, arr.length]
 	 */
 	@Override
 	public void shuffle(int[] arr, int iterations) {
@@ -23,16 +23,18 @@ public class InverseBubbleSort extends InverseSort {
 		if (iterations == 1) {
 			return;
 		}
-		int max = arr.length - iterations + 1;
-		int required = getBinomial(1, max, 1.0 / iterations);
-		for (int i = 0; i < arr.length; i++) {
-			int min = Math.max(arr.length - i - iterations, 0);
+		int n = arr.length;
+		int bound = n - iterations + 1;
+		// Number of maximum distance swaps to do, at least one
+		int swaps = getBinomial(1, bound, 1.0 / iterations);
+		for (int i = 0; i < n; i++) {
+			int min = Math.min(i + iterations - 1, n - 1);
 			int j;
-			if (required > 0 && random.nextInt(min + 1) < required) {
-				j = arr.length - min - 1;
-				required--;
+			if (swaps > 0 && random.nextInt(n - min) < swaps) {
+				j = min;
+				swaps--;
 			} else {
-				j = arr.length - 1 - random.nextInt(Math.max(arr.length - i - iterations + 1, 0), arr.length - i);
+				j = random.nextInt(i, Math.min(i + iterations - 1, n));
 			}
 			swap(arr, i, j);
 		}
