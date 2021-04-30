@@ -25,7 +25,9 @@ public class InverseInsertionSort extends InverseSort {
 	}
 
 	/**
-	 * @param arr        Array
+	 * Shuffles array so that insertion sort does specified number of insertions
+	 *
+	 * @param arr        Sorted array
 	 * @param insertions Between [0, arr.length] (inclusive)
 	 */
 	@Override

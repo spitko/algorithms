@@ -12,7 +12,9 @@ public class InverseSelectionSort extends InverseSort {
 	}
 
 	/**
-	 * @param arr   Array
+	 * Shuffles array so that selection sort does specified number of swaps
+	 *
+	 * @param arr   Sorted array
 	 * @param swaps Between [0, arr.length] (inclusive)
 	 */
 	@Override

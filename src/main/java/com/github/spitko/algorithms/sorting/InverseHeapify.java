@@ -18,6 +18,8 @@ public class InverseHeapify extends InverseSort {
 
 
 	/**
+	 * Shuffles array so that heapify does specified number of sinking operations
+	 *
 	 * @param arr        Array
 	 * @param operations Between [0, arr.length / 2] (inclusive)
 	 */
