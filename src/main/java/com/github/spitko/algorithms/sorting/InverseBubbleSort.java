@@ -15,7 +15,7 @@ public class InverseBubbleSort extends InverseSort {
 	 * Shuffles array so that bubble sort does specified number of iterations
 	 *
 	 * @param arr        Sorted array
-	 * @param iterations Between [1, arr.length]
+	 * @param iterations From 1 to arr.length
 	 */
 	@Override
 	public void shuffle(int[] arr, int iterations) {

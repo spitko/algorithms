@@ -15,7 +15,7 @@ public class InverseSelectionSort extends InverseSort {
 	 * Shuffles array so that selection sort does specified number of swaps
 	 *
 	 * @param arr   Sorted array
-	 * @param swaps Between [0, arr.length] (inclusive)
+	 * @param swaps From 0 to arr.length - 1
 	 */
 	@Override
 	public void shuffle(int[] arr, int swaps) {

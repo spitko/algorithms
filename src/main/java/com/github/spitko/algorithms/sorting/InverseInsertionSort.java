@@ -28,7 +28,7 @@ public class InverseInsertionSort extends InverseSort {
 	 * Shuffles array so that insertion sort does specified number of insertions
 	 *
 	 * @param arr        Sorted array
-	 * @param insertions Between [0, arr.length] (inclusive)
+	 * @param insertions From 0 to arr.length - 1
 	 */
 	@Override
 	public void shuffle(int[] arr, int insertions) {

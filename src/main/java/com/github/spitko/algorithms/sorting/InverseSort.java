@@ -75,10 +75,14 @@ public abstract class InverseSort {
 	 *
 	 * @param arr       Array to shuffle
 	 * @param condition Condition to match
+	 * @return number of shuffles done
 	 */
-	public void shuffle(int[] arr, Predicate<int[]> condition) {
+	public int shuffle(int[] arr, Predicate<int[]> condition) {
+		int shuffles = 0;
 		do {
+			shuffles++;
 			shuffle(arr);
 		} while (!condition.test(arr.clone()));
+		return shuffles;
 	}
 }

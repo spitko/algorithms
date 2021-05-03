@@ -21,15 +21,16 @@ public class InverseQuickselect extends InverseSort {
 	 * Shuffle array so that Quickselect does specified number of partitions when finding k-th smallest element
 	 *
 	 * @param arr        Array
-	 * @param k          From 0 to arr.length - 1
+	 * @param k          From 0 to arr.length - 2
 	 * @param partitions Number of partitions to do, from 1 to arr.length - 1
+	 * @return number of shuffles done
 	 */
-	public void shuffle(int[] arr, int k, int partitions) {
-		if (arr == null || k < 0 || k >= arr.length || partitions < 1 || partitions >= arr.length) {
+	public int shuffle(int[] arr, int k, int partitions) {
+		if (arr == null || k < 0 || k > arr.length - 2 || partitions < 1 || partitions >= arr.length) {
 			throw new IllegalArgumentException();
 		}
 		Quickselect qs = new Quickselect();
-		shuffle(arr, a -> qs.countPartitions(a, k) == partitions);
+		return shuffle(arr, a -> qs.countPartitions(a, k) == partitions);
 	}
 
 	@Override

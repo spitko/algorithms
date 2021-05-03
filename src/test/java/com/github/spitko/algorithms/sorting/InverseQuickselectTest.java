@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -19,24 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InverseQuickselectTest extends InverseSortTest {
 
-
 	private static Stream<Arguments> provideParameters() {
 		return IntStream.rangeClosed(1, 4).boxed()
-				.flatMap(partitions -> IntStream.rangeClosed(0, 4)
+				.flatMap(partitions -> IntStream.rangeClosed(0, 3)
 						.mapToObj(k -> Arguments.of(partitions, k)));
-	}
-
-	private static void permute(int[] arr, int size, int n, Consumer<int[]> consumer) {
-		if (size == 1)
-			consumer.accept(arr);
-		for (int i = 0; i < size; i++) {
-			permute(arr, size - 1, n, consumer);
-			if (size % 2 == 1) {
-				swap(arr, 0, size - 1);
-			} else {
-				swap(arr, i, size - 1);
-			}
-		}
 	}
 
 	@Test
@@ -70,13 +55,13 @@ class InverseQuickselectTest extends InverseSortTest {
 	}
 
 	@Test
-	void testLongArray() {
+	void testPermutations() {
 		Map<Integer /* k */, Map<Integer /* partitions */, Integer /* count */>> all = new HashMap<>();
 		IntStream.rangeClosed(0, 9).forEach(i -> all.put(i, new HashMap<>()));
 		Quickselect qs = new Quickselect();
 		InverseQuickselect inv = new InverseQuickselect();
 		int[] arr = inv.generateSortedArray(1, 100, 10);
-		permute(arr, arr.length, arr.length, a -> {
+		permute(arr, arr.length, a -> {
 			for (int k = 0; k <= 9; k++) {
 				int[] cloned = arr.clone();
 				qs.partitions = 0;
@@ -84,16 +69,10 @@ class InverseQuickselectTest extends InverseSortTest {
 				all.get(k).merge(qs.partitions, 1, Integer::sum);
 			}
 		});
-		for (int p = 1; p < arr.length; p++) {
-			for (int k = 5; k < 10; k++) {
-				inv.shuffle(arr, k, p);
-			}
-		}
 		int total = 3628800; // 10!
 		System.out.println(all);
 		System.out.printf("%-5s%-15s%-5s\n", "k", "partitions", "probability");
 		all.forEach((k, value) -> value.forEach((partitions, count) -> System.out.printf("%-5d%-15d%-5.3f\n", k, partitions, count * 100.0 / total)));
-
 	}
 
 	/**

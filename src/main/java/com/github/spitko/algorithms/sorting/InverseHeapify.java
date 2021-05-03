@@ -16,23 +16,32 @@ public class InverseHeapify extends InverseSort {
 		System.out.println(Arrays.toString(arr));
 	}
 
+	/**
+	 * Shuffle and heapify array
+	 *
+	 * @param arr Array to shuffle
+	 */
+	public void randomHeapify(int[] arr) {
+		super.shuffle(arr);
+		int n = arr.length;
+		for (int i = n / 2 - 1; i >= 0; i--) {
+			sink(arr, n, i);
+		}
+	}
 
 	/**
 	 * Shuffles array so that heapify does specified number of sinking operations
 	 *
 	 * @param arr        Array
-	 * @param operations Between [0, arr.length / 2] (inclusive)
+	 * @param operations From 0 to arr.length / 2
 	 */
 	@Override
 	public void shuffle(int[] arr, int operations) {
 		if (arr == null || operations < 0 || operations > arr.length / 2) {
 			throw new IllegalArgumentException();
 		}
-		shuffle(arr);
+		randomHeapify(arr);
 		int n = arr.length;
-		for (int i = n / 2 - 1; i >= 0; i--) {
-			sink(arr, n, i);
-		}
 		List<Integer> list = IntStream.range(0, n / 2).boxed().collect(Collectors.toList());
 		Collections.shuffle(list);
 		list = list.subList(0, operations);

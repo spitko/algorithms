@@ -3,6 +3,7 @@ package com.github.spitko.algorithms.sorting;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -10,10 +11,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InverseSortTest {
 
-	static void swap(int[] a, int i, int j) {
+	protected static void swap(int[] a, int i, int j) {
 		int temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
+	}
+
+	protected static void permute(int[] arr, int n, Consumer<int[]> consumer) {
+		if (n == 1)
+			consumer.accept(arr);
+		for (int i = 0; i < n; i++) {
+			InverseSortTest.permute(arr, n - 1, consumer);
+			if (n % 2 == 1) {
+				swap(arr, 0, n - 1);
+			} else {
+				swap(arr, i, n - 1);
+			}
+		}
 	}
 
 	@Test
