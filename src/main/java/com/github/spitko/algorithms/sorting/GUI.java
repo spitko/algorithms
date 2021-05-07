@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Layout for GUI is auto-generated using IntelliJ GUI Designer
+ */
+@SuppressWarnings("ConstantConditions")
 public class GUI {
 
 	private static final String LOOK_AND_FEEL = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
@@ -22,8 +26,8 @@ public class GUI {
 	private JButton shuffleButton;
 	private JTextField shuffledArrayTextField;
 	private JPanel main;
-	private JButton copyButton2;
-	private JButton copyButton1;
+	private JButton shuffledArrayCopyButton;
+	private JButton sortedArrayCopyButton;
 	private JLabel parameter1Label;
 	private JSpinner parameter2Spinner;
 	private JLabel parameter2Label;
@@ -31,48 +35,77 @@ public class GUI {
 	private JButton batchButton;
 	private JTextArea batchOutputTextArea;
 	private JProgressBar batchProgressBar;
-	private JButton copyButton3;
+	private JButton batchOutputCopyButton;
 	private JTabbedPane tabbedPane;
 
+	// Currently selected algorithm
 	private InverseSort inverseSort;
+	// Updated on "Generate" button click
 	private int[] sortedArray;
 
 	public GUI() {
 		$$$setupUI$$$();
+
+		// New algorithm is selected
 		algorithmBox.addActionListener(e -> {
 			Algorithm alg = (Algorithm) algorithmBox.getSelectedItem();
 			inverseSort = alg.inverseSort;
 			updateParameters(alg.parameters);
 		});
+
+		// Pre-select first algorithm
 		algorithmBox.setSelectedIndex(0);
+
+		// Update parameter spinners on array length change
 		arrayLengthSpinner.addChangeListener(e -> updateSpinners());
+
+		// Generate button is clicked
 		generateButton.addActionListener(e -> {
 			sortedArray = generateSortedArray();
 			sortedArrayTextField.setText(Arrays.toString(sortedArray));
 			updateSpinners();
 		});
+
+		//  click to populate sorted array text field on startup
 		generateButton.doClick();
+
+		// Shuffle button is clicked
 		shuffleButton.addActionListener(e -> {
 			int[] arr = sortedArray.clone();
 			shuffleArray(arr);
 			shuffledArrayTextField.setText(Arrays.toString(arr));
 		});
+
+		// click to populate shuffled array text field on startup
 		shuffleButton.doClick();
-		copyButton1.addActionListener(e -> {
+
+		// Copy buttons
+		sortedArrayCopyButton.addActionListener(e -> {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(sortedArrayTextField.getText()), null);
 		});
-		copyButton2.addActionListener(e -> {
+		shuffledArrayCopyButton.addActionListener(e -> {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(shuffledArrayTextField.getText()), null);
 		});
-		copyButton3.addActionListener(e -> {
+		batchOutputCopyButton.addActionListener(e -> {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(batchOutputTextArea.getText()), null);
 		});
+
+		// Generate is clicked in batch tab
 		batchButton.addActionListener(e -> {
+			// array count set in batch tab
 			int count = (int) countSpinner.getValue();
+
+			// Reset progress bar
 			batchProgressBar.setMaximum(count);
 			batchProgressBar.setValue(0);
+
+			// Clear output text area
 			batchOutputTextArea.setText(null);
-			copyButton3.setEnabled(false);
+
+			// Disable copy button while generating is in progress
+			batchOutputCopyButton.setEnabled(false);
+
+			// generate arrays in background thread, so swing does not hang
 			SwingWorker<Void, String> worker = new SwingWorker<>() {
 				@Override
 				protected Void doInBackground() {
@@ -92,7 +125,7 @@ public class GUI {
 
 				@Override
 				protected void done() {
-					copyButton3.setEnabled(true);
+					batchOutputCopyButton.setEnabled(true);
 				}
 			};
 			worker.execute();
@@ -117,20 +150,33 @@ public class GUI {
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Shuffle selected array in-place, using selected algorithm
+	 * @param arr Array to shuffle
+	 */
 	private void shuffleArray(int[] arr) {
 		Algorithm alg = (Algorithm) algorithmBox.getSelectedItem();
-		if (Algorithm.Quickselect == alg) {
-			int shuffles = ((InverseQuickselect) inverseSort).shuffle(arr, (int) parameter1Spinner.getValue(), (int) parameter2Spinner.getValue());
-			System.out.println(shuffles + " shuffles were done");
-		} else if (Algorithm.Quicksort == alg) {
-			inverseSort.shuffle(arr); // no parameters
-		} else if (Algorithm.HeapSort == alg) {
-			((InverseHeapify) inverseSort).randomHeapify(arr);
-		} else {
-			inverseSort.shuffle(arr, (int) parameter1Spinner.getValue());
+		switch (alg) {
+			case Quickselect: // 2 parameters
+				int shuffles = ((InverseQuickselect) inverseSort).shuffle(arr, (int) parameter1Spinner.getValue(), (int) parameter2Spinner.getValue());
+				System.out.println(shuffles + " shuffles were done");
+				break;
+			case Quicksort: // no parameters
+				inverseSort.shuffle(arr);
+				break;
+			case HeapSort: // no parameters, different method
+				((InverseHeapify) inverseSort).randomHeapify(arr);
+				break;
+			default: // only 1 parameter
+				inverseSort.shuffle(arr, (int) parameter1Spinner.getValue());
+				break;
 		}
 	}
 
+	/**
+	 * Generate and return a new sorted array, using parameters set in GUI
+	 * @return Sorted array
+	 */
 	private int[] generateSortedArray() {
 		int arrayLength = (int) arrayLengthSpinner.getValue();
 		int minValue = (int) minValueSpinner.getValue();
@@ -142,7 +188,11 @@ public class GUI {
 		return inverseSort.generateSortedArray(minValue, maxValue, arrayLength);
 	}
 
-	void updateParameters(Parameter[] parameters) {
+	/**
+	 * Called when new algorithm is selected, change parameter spinners and labels (based on algorithm)
+	 * @param parameters Selected algorithm's parameters
+	 */
+	private void updateParameters(Parameter[] parameters) {
 		parameter1Label.setVisible(false);
 		parameter1Spinner.setVisible(false);
 		parameter2Label.setVisible(false);
@@ -158,11 +208,15 @@ public class GUI {
 				parameter2Spinner.setModel(parameters[1].model);
 				parameter2Spinner.setVisible(true);
 			}
+			// Ensure spinners have correct max value
 			updateSpinners();
 		}
 	}
 
-	void updateSpinners() {
+	/**
+	 * Called whenever array length or algorithm is changed
+	 */
+	private void updateSpinners() {
 		Algorithm alg = (Algorithm) algorithmBox.getSelectedItem();
 		int arrayLength = (int) arrayLengthSpinner.getValue();
 		for (Parameter parameter : alg.parameters) {
@@ -171,10 +225,15 @@ public class GUI {
 	}
 
 	private void createUIComponents() {
+		// Algorithm selection dropdown
 		algorithmBox = new JComboBox<>(Algorithm.values());
+
+		// First row spinners
 		arrayLengthSpinner = new JSpinner(new SpinnerNumberModel(10, 5, 50, 1));
 		minValueSpinner = new JSpinner(new SpinnerNumberModel(1, -99, 99, 1));
 		maxValueSpinner = new JSpinner(new SpinnerNumberModel(50, -99, 99, 1));
+
+		// Batch mode count spinner
 		countSpinner = new JSpinner(new SpinnerNumberModel(10, 5, 1000000, 1));
 	}
 
@@ -288,20 +347,20 @@ public class GUI {
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
 		main.add(generateButton, gbc);
-		copyButton2 = new JButton();
-		copyButton2.setText("Copy");
+		shuffledArrayCopyButton = new JButton();
+		shuffledArrayCopyButton.setText("Copy");
 		gbc = new GridBagConstraints();
 		gbc.gridx = 2;
 		gbc.gridy = 3;
 		gbc.fill = GridBagConstraints.BOTH;
-		main.add(copyButton2, gbc);
-		copyButton1 = new JButton();
-		copyButton1.setText("Copy");
+		main.add(shuffledArrayCopyButton, gbc);
+		sortedArrayCopyButton = new JButton();
+		sortedArrayCopyButton.setText("Copy");
 		gbc = new GridBagConstraints();
 		gbc.gridx = 2;
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.BOTH;
-		main.add(copyButton1, gbc);
+		main.add(sortedArrayCopyButton, gbc);
 		final JPanel panel3 = new JPanel();
 		panel3.setLayout(new BorderLayout(0, 0));
 		tabbedPane.addTab("Batch", panel3);
@@ -332,10 +391,10 @@ public class GUI {
 		panel3.add(panel6, BorderLayout.SOUTH);
 		batchProgressBar = new JProgressBar();
 		panel6.add(batchProgressBar, BorderLayout.CENTER);
-		copyButton3 = new JButton();
-		copyButton3.setEnabled(false);
-		copyButton3.setText("Copy all");
-		panel6.add(copyButton3, BorderLayout.EAST);
+		batchOutputCopyButton = new JButton();
+		batchOutputCopyButton.setEnabled(false);
+		batchOutputCopyButton.setText("Copy all");
+		panel6.add(batchOutputCopyButton, BorderLayout.EAST);
 		label1.setLabelFor(arrayLengthSpinner);
 		label2.setLabelFor(minValueSpinner);
 		label3.setLabelFor(maxValueSpinner);
@@ -375,16 +434,21 @@ public class GUI {
 	}
 
 	private static class Parameter {
-		String label;
-		Function<Integer /*arr.length*/, Integer> maxValueFunction;
-		SpinnerNumberModel model;
+		String label; // Label to be shown in GUI for parameter
+		Function<Integer /*arr.length*/, Integer> maxValueFunction; // Function to get max parameter value from array length
+		SpinnerNumberModel model; // Parameter's spinner model
 
 		public Parameter(String label, int minValue, Function<Integer /*arr.length*/, Integer> maxValueFunction) {
 			this.label = label;
 			this.maxValueFunction = maxValueFunction;
+			// Maximum value is later updated through updateSpinnerModel
 			this.model = new SpinnerNumberModel(minValue + 1, minValue, 2, 1);
 		}
 
+		/**
+		 * Called on array length change (or algorithm change), in order to update spinner's max value
+		 * @param arrayLength new array length
+		 */
 		void updateSpinnerModel(int arrayLength) {
 			int newMax = maxValueFunction.apply(arrayLength);
 			this.model.setMaximum(newMax);

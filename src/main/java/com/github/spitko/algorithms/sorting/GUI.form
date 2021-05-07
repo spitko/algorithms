@@ -169,7 +169,7 @@
               <text value="Generate"/>
             </properties>
           </component>
-          <component id="de24" class="javax.swing.JButton" binding="copyButton2">
+          <component id="de24" class="javax.swing.JButton" binding="shuffledArrayCopyButton">
             <constraints>
               <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
               <gridbag weightx="0.0" weighty="0.0"/>
@@ -178,7 +178,7 @@
               <text value="Copy"/>
             </properties>
           </component>
-          <component id="2e2ed" class="javax.swing.JButton" binding="copyButton1">
+          <component id="2e2ed" class="javax.swing.JButton" binding="sortedArrayCopyButton">
             <constraints>
               <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
               <gridbag weightx="0.0" weighty="0.0"/>
@@ -258,7 +258,7 @@
                 <constraints border-constraint="Center"/>
                 <properties/>
               </component>
-              <component id="3f09d" class="javax.swing.JButton" binding="copyButton3">
+              <component id="3f09d" class="javax.swing.JButton" binding="batchOutputCopyButton">
                 <constraints border-constraint="East"/>
                 <properties>
                   <enabled value="false"/>
